@@ -195,14 +195,14 @@ export default function DownloadDialog({
     showDialogModal({
       title: t('install.anticheat-warning.title', 'Anticheat Broken/Denied'),
       message: t(
-        'install.anticheat-warning.message',
-        'The anticheat support is broken or denied. The game will not work. Do you want to install it anyway?'
+        'install.anticheat-warning.multiplayer_message',
+        'The anticheat support is broken or denied. The game may open but the multiplayer features will not work. Do you want to install it anyway?'
       ),
       buttons: [
         {
           text: t(
-            'install.anticheat-warning.install',
-            'Yes (I understand it will not work)'
+            'install.anticheat-warning.install_anyway',
+            'Yes (I understand the multiplayer features will not work)'
           ),
           onClick: async () => handleInstall(path, true)
         },
@@ -274,6 +274,32 @@ export default function DownloadDialog({
           selectedBuild,
           branch
         )
+
+        if (
+          gameInstallInfo?.manifest.disk_size === 0 &&
+          gameInstallInfo.manifest.download_size === 0
+        ) {
+          showDialogModal({
+            showDialog: true,
+            title: t(
+              'label.game.not-installable-game',
+              'Game is NOT Installable'
+            ),
+            message: t(
+              'status.gog-goodie',
+              "This game doesn't appear to be installable. Check downloadable content on https://gog.com/account"
+            ),
+            buttons: [
+              {
+                text: tr('box.ok')
+              }
+            ],
+            type: 'MESSAGE'
+          })
+          backdropClick()
+          return
+        }
+
         setGameInstallInfo(gameInstallInfo)
         setGettingInstallInfo(false)
 
